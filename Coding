@@ -1,0 +1,41 @@
+import os
+
+def organize_files(source_dir, destination_dir):
+    # Define categories
+    categories = {
+        'Documents': ['.pdf', '.doc', '.txt'],
+        'Images': ['.jpg', '.jpeg', '.png', '.gif'],
+        'Videos': ['.mp4', '.avi', '.mkv'],
+        'Music': ['.mp3', '.wav', '.flac'],
+        'Others': []  # Any other file types will go here
+    }
+    
+    # Create destination directories if they don't exist
+    for category in categories:
+        category_dir = os.path.join(destination_dir, category)
+        if not os.path.exists(category_dir):
+            os.makedirs(category_dir)
+    
+    # Organize files
+    for filename in os.listdir(source_dir):
+        if os.path.isfile(os.path.join(source_dir, filename)):
+            file_extension = os.path.splitext(filename)[1]
+            moved = False
+            for category, extensions in categories.items():
+                if file_extension in extensions:
+                    source_file = os.path.join(source_dir, filename)
+                    destination_file = os.path.join(destination_dir, category, filename)
+                    os.rename(source_file, destination_file)
+                    moved = True
+                    break
+            if not moved:
+                print(f"File '{filename}' doesn't match any category. Moving to 'Others' folder.")
+                source_file = os.path.join(source_dir, filename)
+                destination_file = os.path.join(destination_dir, 'Others', filename)
+                os.rename(source_file, destination_file)
+
+# Example usage
+if __name__ == "__main__":
+    source_directory = "/path/to/source"
+    destination_directory = "/path/to/destination"
+    organize_files(source_directory, destination_directory)
